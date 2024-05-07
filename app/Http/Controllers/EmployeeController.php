@@ -6,6 +6,8 @@ use App\Models\Company;
 use App\DataTables\EmployeeDataTable;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Storage;
+
 class EmployeeController extends Controller
 {
     /**
@@ -56,10 +58,12 @@ class EmployeeController extends Controller
     ]);
         $data = new Employee();
         if ($request->file('image')) {
-          $file = $request->file('image');
-          $filename = date('YmdHi') . $file->getClientOriginalName();
-          $file->move(public_path('image/employee/'), $filename);
-          $data->image = $filename;
+          $path = Storage::putFile('image', $request->file('image'));
+          // $file = $request->file('image');
+          // $filename = date('YmdHi') . $file->getClientOriginalName();
+          // $file->store('image/employee', $filename);
+          // $data->image = $filename;
+          $data->image = $path;
         }
         $data->name = $request->name;
         $data->email = $request->email;

@@ -25,7 +25,7 @@
             <!-- <h3 style="color: green;">View all image</h3> -->
 
             <div class="row">
-            {!! $dataTable->table(['class' => 'table table-bordered']) !!}
+            {!! $dataTable->table(['id' => 'users-table','class' => 'table table-bordered']) !!}
             </div>
         </div>
         {!! $dataTable->scripts() !!}
@@ -33,7 +33,14 @@
 
     </section>
 @endsection
-
+@push('css')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    @endpush
+@push('scripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+@endpush
 @section('script')
     <script type="text/javascript">
         document.getElementById('salonz').className = 'nav-link active';

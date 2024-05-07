@@ -9,6 +9,11 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+
+
 class EmployeeDataTable extends DataTable
 {
     /**
@@ -17,36 +22,40 @@ class EmployeeDataTable extends DataTable
      * @param mixed $query Results from query() method.
      * @return \Yajra\DataTables\DataTableAbstract
      */
-    public function dataTable($query)
+    public function dataTable(QueryBuilder $query): EmployeeDataTable
     {
-        return datatables()
-            ->eloquent($query)
-            ->addColumn('action', 'employeedatatable.action');
+        return (new EmployeeDataTable($query))->setRowId('id');
     }
-
-    /**
-     * Get query source of dataTable.
-     *
-     * @param \App\Models\EmployeeDataTable $model
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function query(EmployeeDataTable $model)
+ 
+    public function query(Employee $model): QueryBuilder
     {
         return $model->newQuery();
     }
+
+   
 
     /**
      * Optional method if you want to use html builder.
      *
      * @return \Yajra\DataTables\Html\Builder
      */
-    public function html()
+    public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('employeedatatable-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->orderBy(1);
+        ->setTableId('users-table')
+        ->columns($this->getColumns())
+        ->minifiedAjax()
+        ->orderBy(1)
+        ->selectStyleSingle()
+        ->buttons([
+            Button::make('add'),
+            Button::make('excel'),
+            Button::make('csv'),
+            Button::make('pdf'),
+            Button::make('print'),
+            Button::make('reset'),
+            Button::make('reload'),
+        ]);
     }
 
     /**
@@ -76,5 +85,8 @@ class EmployeeDataTable extends DataTable
      *
      * @return string
      */
-
+    protected function filename(): string
+    {
+        return 'Users_'.date('YmdHis');
+    }
 }
